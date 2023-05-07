@@ -1,0 +1,9 @@
+pip install python-constraint
+
+pip install pandas
+
+pip install plotly
+
+pip install prettytable
+
+pip install MutPy
