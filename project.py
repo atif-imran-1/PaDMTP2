@@ -118,23 +118,23 @@ def padmt_algo(code, constraints, mutPyObj):
     
     rtTable = PrettyTable()
     rtTable.title = 'Random Testing (RT)'
-    rtTable.field_names = ["k Test Cases", "RT Value", "RT vs PaDMT", "MT Score"]
+    rtTable.field_names = ["k Test Cases", "RT Value", "RT vs PaDMTP", "MT Score"]
     
     artTable = PrettyTable()
     artTable.title = 'Adaptive Random Testing (ART)'
-    artTable.field_names = ["k Test Cases", "ART Value", "ART vs PaDMT", "MT Score"]
+    artTable.field_names = ["k Test Cases", "ART Value", "ART vs PaDMTP", "MT Score"]
     
     dseTable = PrettyTable()
     dseTable.title = 'Dynamic Symbolic Execution (DSE)'
-    dseTable.field_names = ["k Test Cases", "DSE Value", "DSE vs PaDMT", "MT Score"]
+    dseTable.field_names = ["k Test Cases", "DSE Value", "DSE vs PaDMTP", "MT Score"]
     
     priTable = PrettyTable()
     priTable.title = 'Prioritized Test Cases'
-    priTable.field_names = ["x", "y", "Path Length", "PaDMT"]
+    priTable.field_names = ["x", "y", "Path Length", "PaDMTP"]
     
     poTable = PrettyTable()
     poTable.title = 'Overhead of Source Test Case Generation'
-    poTable.field_names = ["k Test Cases", "PaDMT", "RT", "ART", "DSE", "PO Value"]
+    poTable.field_names = ["k Test Cases", "PaDMTP", "RT", "ART", "DSE", "PO Value"]
     
     while k < 100:
         # ================================================== #
@@ -447,7 +447,7 @@ def padmt_algo(code, constraints, mutPyObj):
         
         
         print("# ======================================================== #")
-        print("PaDMT Result: Mutation Testing (MT)")
+        print("PaDMTP Result: Mutation Testing (MT)")
         print("# ======================================================== #\n")
         
         
@@ -505,7 +505,12 @@ def padmt_algo(code, constraints, mutPyObj):
 
         print(rt_mt_output)
         
-        rtTable.add_row([f"{k}%", rt_val, rt_val/padmt_val, rt_mt_rslt])
+        rt_vs_padmt = rt_val/padmt_val
+        
+        if(rt_vs_padmt < 0):
+            rt_vs_padmt *= -1
+        
+        rtTable.add_row([f"{k}%", rt_val, rt_vs_padmt, rt_mt_rslt])
         
         end_rt = time.time()
         
@@ -551,7 +556,12 @@ def padmt_algo(code, constraints, mutPyObj):
 
         print(art_mt_output)
         
-        artTable.add_row([f"{k}%", art_val, art_val/padmt_val, art_mt_rslt])
+        art_vs_padmt = art_val/padmt_val
+        
+        if(art_vs_padmt < 0):
+            art_vs_padmt *= -1
+        
+        artTable.add_row([f"{k}%", art_val, art_vs_padmt, art_mt_rslt])
         
         end_art = time.time()
         
@@ -616,7 +626,12 @@ def padmt_algo(code, constraints, mutPyObj):
 
         print(dse_mt_output)
         
-        dseTable.add_row([f"{k}%", dse_val, dse_val/padmt_val, dse_mt_rslt])
+        dse_vs_padmt = dse_val/padmt_val
+        
+        if(dse_vs_padmt < 0):
+            dse_vs_padmt *= -1
+        
+        dseTable.add_row([f"{k}%", dse_val, dse_vs_padmt, dse_mt_rslt])
         
         end_dse = time.time()
         
