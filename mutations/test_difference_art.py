@@ -1,5 +1,5 @@
 from unittest import TestCase
-from testcodes.triangle import compute_area_of_triangle as triangle
+from testcodes.difference import positive_difference as difference
 import json
 
 openJSON = open("ART_Values.json")
@@ -11,4 +11,4 @@ class CodeTest(TestCase):
     # test case for checking non-prime nums
     def test_equal(self):
         for index, val in enumerate(dataSaveJSON):
-            self.assertEqual(triangle(dataSaveJSON[index]['x'], dataSaveJSON[index]['y']), dataSaveJSON[index]['z'])
+            self.assertEqual(difference(dataSaveJSON[index]['x'], dataSaveJSON[index]['y']), dataSaveJSON[index]['z'])

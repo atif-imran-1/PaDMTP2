@@ -83,7 +83,7 @@ def dynamic_symbolic_execution(code, inputs):
     return {'x': symbolic_inputs[0], 'y': symbolic_inputs[1], 'z': result}
 
 
-def random_testing_code(code, dataset, dataset_size, num_test_cases):
+def random_testing_code_original(code, dataset, dataset_size, num_test_cases):
     random_tests = []
     random_test_index = []
     
@@ -106,8 +106,91 @@ def random_testing_code(code, dataset, dataset_size, num_test_cases):
     
     return random_tests
 
+def random_testing_code_hcf(code, dataset, dataset_size, num_test_cases):
+    random_tests = []
+    random_test_index = []
+    
+    for i in range(num_test_cases):
 
-def padmt_algo(code, constraints, mutPyObj):
+        ind = random.randint(0, dataset_size)
+        while (ind in random_test_index):
+            ind = random.randint(0, dataset_size)
+        random_test_index.append(ind)
+
+        x, y = dataset[ind]['x'], dataset[ind]['y']
+    
+        expected_output = x + y if x + y != 0 else (y - x if y > 0 else x - y)
+        expected_output = expected_output - x if x > 0 else expected_output + x
+        result = code(x, y)
+        if result == expected_output:
+            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(1)})
+        else:
+            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(0)})
+    
+    return random_tests
+
+def random_testing_code_lcm(code, dataset, dataset_size, num_test_cases):
+    random_tests = []
+    random_test_index = []
+    
+    for i in range(num_test_cases):
+
+        ind = random.randint(0, dataset_size)
+        while (ind in random_test_index):
+            ind = random.randint(0, dataset_size)
+        random_test_index.append(ind)
+
+        x, y = dataset[ind]['x'], dataset[ind]['y']
+    
+        expected_output = 0
+        if x > y:
+            greater = x
+        else:
+            greater = y
+
+        while True:
+            if (greater % x == 0) and (greater % y == 0):
+                lcm = greater
+                break
+            greater += 1
+
+        expected_output = greater
+        expected_output = expected_output - x if x > 0 else expected_output + x
+
+        result = code(x, y)
+        if result == expected_output:
+            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(1)})
+        else:
+            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(0)})
+    
+    return random_tests
+
+def random_testing_code_difference(code, dataset, dataset_size, num_test_cases):
+    random_tests = []
+    random_test_index = []
+    
+    for i in range(num_test_cases):
+
+        ind = random.randint(0, dataset_size)
+        while (ind in random_test_index):
+            ind = random.randint(0, dataset_size)
+        random_test_index.append(ind)
+
+        x, y = dataset[ind]['x'], dataset[ind]['y']
+    
+        expected_output = x - y if x > y else y - x
+        expected_output = -expected_output if expected_output < 0 else expected_output
+        
+        result = code(x, y)
+        if result == expected_output:
+            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(1)})
+        else:
+            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(0)})
+    
+    return random_tests
+
+
+def padmt_algo(code, constraints, mutPyObj, srcCode):
     #   k% test cases for pairwise technique  
     k = 0
     sol_length = len(constraints)
@@ -471,7 +554,14 @@ def padmt_algo(code, constraints, mutPyObj):
         
         start_rt = time.time()
         
-        rt_test_cases = random_testing_code(code, dataset, len(dataset)-1, 10)
+        if srcCode == 'original':
+            rt_test_cases = random_testing_code_original(code, dataset, len(dataset)-1, 10)
+        elif srcCode == 'hcf':
+            rt_test_cases = random_testing_code_hcf(code, dataset, len(dataset)-1, 10)
+        elif srcCode == 'lcm':
+            rt_test_cases = random_testing_code_lcm(code, dataset, len(dataset)-1, 10)
+        elif srcCode == 'difference':
+            rt_test_cases = random_testing_code_difference(code, dataset, len(dataset)-1, 10)
         
         rt_val = int(0)
         
