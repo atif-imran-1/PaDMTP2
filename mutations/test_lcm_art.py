@@ -2,7 +2,7 @@ from unittest import TestCase
 from testcodes.lcm import compute_lcm as lcm
 import json
 
-openJSON = open("ART_Values.json")
+openJSON = open("./temp/ART_Values.json")
 
 dataSaveJSON = json.load(openJSON)
 

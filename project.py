@@ -19,47 +19,6 @@ def _count_generator(reader):
         yield b
         b = reader(1024 * 1024)
 
-def generate_random_number(dataset, dataset_size, random_index):
-    ind = random.randint(0, dataset_size)
-    random_index.append(ind)
-    x, y = dataset[ind]['x'], dataset[ind]['y']
-
-    return [x, y]
-
-def generate_adaptive_random_number(dataset, dataset_size, random_index):
-    # update the input generation strategy based on indexes of previous inputs
-    
-    ind = random.randint(0, dataset_size)
-    
-    while(ind in random_index):
-        ind = random.randint(0, dataset_size)
-    random_index.append(ind)
-    
-    x, y = dataset[ind]['x'], dataset[ind]['y']
-
-    return [x, y]
-
-def perform_adaptive_random_testing(code, dataset, dataset_size, num_test_cases, random_index):
-    
-    test_cases = []
-    random_index = []
-
-    for i in range(num_test_cases):
-        if i == 0:
-            # first test case, generate a random number
-            test_input = generate_random_number(dataset, dataset_size, random_index)
-        else:
-            # generate an adaptive random number based on previous results
-            test_input = generate_adaptive_random_number(dataset, dataset_size, random_index)
-
-        
-        test_output = code(test_input[0], test_input[1])
-        test_cases.append({'x': test_input[0], 'y': test_input[1], 'z': test_output})
-        
-    random_index = []
-    
-    return test_cases
-
 
 def dynamic_symbolic_execution(code, inputs):
     symbolic_inputs = [None, None]
@@ -83,112 +42,6 @@ def dynamic_symbolic_execution(code, inputs):
     return {'x': symbolic_inputs[0], 'y': symbolic_inputs[1], 'z': result}
 
 
-def random_testing_code_original(code, dataset, dataset_size, num_test_cases):
-    random_tests = []
-    random_test_index = []
-    
-    for i in range(num_test_cases):
-
-        ind = random.randint(0, dataset_size)
-        while (ind in random_test_index):
-            ind = random.randint(0, dataset_size)
-        random_test_index.append(ind)
-
-        x, y = dataset[ind]['x'], dataset[ind]['y']
-    
-        expected_output = x + y if x + y != 0 else (y - x if y > 0 else x - y)
-        expected_output = expected_output - x if x > 0 else expected_output + x
-        result = code(x, y)
-        if result == expected_output:
-            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(1)})
-        else:
-            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(0)})
-    
-    return random_tests
-
-def random_testing_code_hcf(code, dataset, dataset_size, num_test_cases):
-    random_tests = []
-    random_test_index = []
-    
-    for i in range(num_test_cases):
-
-        ind = random.randint(0, dataset_size)
-        while (ind in random_test_index):
-            ind = random.randint(0, dataset_size)
-        random_test_index.append(ind)
-
-        x, y = dataset[ind]['x'], dataset[ind]['y']
-    
-        expected_output = x + y if x + y != 0 else (y - x if y > 0 else x - y)
-        expected_output = expected_output - x if x > 0 else expected_output + x
-        result = code(x, y)
-        if result == expected_output:
-            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(1)})
-        else:
-            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(0)})
-    
-    return random_tests
-
-def random_testing_code_lcm(code, dataset, dataset_size, num_test_cases):
-    random_tests = []
-    random_test_index = []
-    
-    for i in range(num_test_cases):
-
-        ind = random.randint(0, dataset_size)
-        while (ind in random_test_index):
-            ind = random.randint(0, dataset_size)
-        random_test_index.append(ind)
-
-        x, y = dataset[ind]['x'], dataset[ind]['y']
-    
-        expected_output = 0
-        if x > y:
-            greater = x
-        else:
-            greater = y
-
-        while True:
-            if (greater % x == 0) and (greater % y == 0):
-                lcm = greater
-                break
-            greater += 1
-
-        expected_output = greater
-        expected_output = expected_output - x if x > 0 else expected_output + x
-
-        result = code(x, y)
-        if result == expected_output:
-            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(1)})
-        else:
-            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(0)})
-    
-    return random_tests
-
-def random_testing_code_difference(code, dataset, dataset_size, num_test_cases):
-    random_tests = []
-    random_test_index = []
-    
-    for i in range(num_test_cases):
-
-        ind = random.randint(0, dataset_size)
-        while (ind in random_test_index):
-            ind = random.randint(0, dataset_size)
-        random_test_index.append(ind)
-
-        x, y = dataset[ind]['x'], dataset[ind]['y']
-    
-        expected_output = x - y if x > y else y - x
-        expected_output = -expected_output if expected_output < 0 else expected_output
-        
-        result = code(x, y)
-        if result == expected_output:
-            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(1)})
-        else:
-            random_tests.append({'x': x, 'y': y, 'z': result, 'result': int(0)})
-    
-    return random_tests
-
 
 def padmt_algo(code, constraints, mutPyObj, srcCode):
     #   k% test cases for pairwise technique  
@@ -198,14 +51,6 @@ def padmt_algo(code, constraints, mutPyObj, srcCode):
     padmtTable = PrettyTable()
     padmtTable.title = 'PaDMT'
     padmtTable.field_names = ["k Test Cases", "True MRs", "False MRs", "MT Score"]
-    
-    rtTable = PrettyTable()
-    rtTable.title = 'Random Testing (RT)'
-    rtTable.field_names = ["k Test Cases", "RT Value", "RT vs PaDMTP", "MT Score"]
-    
-    artTable = PrettyTable()
-    artTable.title = 'Adaptive Random Testing (ART)'
-    artTable.field_names = ["k Test Cases", "ART Value", "ART vs PaDMTP", "MT Score"]
     
     dseTable = PrettyTable()
     dseTable.title = 'Dynamic Symbolic Execution (DSE)'
@@ -217,7 +62,7 @@ def padmt_algo(code, constraints, mutPyObj, srcCode):
     
     poTable = PrettyTable()
     poTable.title = 'Overhead of Source Test Case Generation'
-    poTable.field_names = ["k Test Cases", "PaDMTP", "RT", "ART", "DSE", "PO Value"]
+    poTable.field_names = ["k Test Cases", "PaDMTP", "DSE", "PO Value"]
     
     while k < 100:
         # ================================================== #
@@ -255,7 +100,7 @@ def padmt_algo(code, constraints, mutPyObj, srcCode):
         
         mr_values = {}
         
-        with open('MR_Values.json', 'w') as f:
+        with open('./temp/MR_Values.json', 'w') as f:
             pass
         
         
@@ -524,7 +369,7 @@ def padmt_algo(code, constraints, mutPyObj, srcCode):
         # Metamorphic Relations: Saving Values to File
 
         jsonString = json.dumps(mr_values)
-        jsonFile = open("MR_Values.json", 'w')
+        jsonFile = open("./temp/MR_Values.json", 'w')
         jsonFile.write(jsonString)
         jsonFile.close()
         
@@ -547,113 +392,6 @@ def padmt_algo(code, constraints, mutPyObj, srcCode):
         padmtTable.add_row([f"{k}%", true_MRs, false_MRs, padmt_mt_rslt])
         
         end_padmt = time.time()
-        
-        print("# ======================================================== #")
-        print("Random Testing (RT)")
-        print("# ======================================================== #\n")
-        
-        start_rt = time.time()
-        
-        if srcCode == 'original':
-            rt_test_cases = random_testing_code_original(code, dataset, len(dataset)-1, 10)
-        elif srcCode == 'hcf':
-            rt_test_cases = random_testing_code_hcf(code, dataset, len(dataset)-1, 10)
-        elif srcCode == 'lcm':
-            rt_test_cases = random_testing_code_lcm(code, dataset, len(dataset)-1, 10)
-        elif srcCode == 'difference':
-            rt_test_cases = random_testing_code_difference(code, dataset, len(dataset)-1, 10)
-        
-        rt_val = int(0)
-        
-        for x in rt_test_cases:
-            rt_val += int(x['z'])
-        
-        print("Random Testing Value:", rt_val, "\n")
-        
-        with open('RT_Values.json', 'w') as f:
-            pass
-        
-        # Random Testing: Saving Values to File
-
-        jsonString = json.dumps(rt_test_cases)
-        jsonFile = open("RT_Values.json", 'w')
-        jsonFile.write(jsonString)
-        jsonFile.close()
-        
-        print("# ======================================================== #")
-        print("RT Result: Mutation Testing (MT)")
-        print("# ======================================================== #\n")
-        
-        
-        rt_mt_output = subprocess.check_output(mutPyObj[1], shell=True, universal_newlines=True)
-        rt_mt_output = rt_mt_output.split('[*]')
-        rt_mt_output = rt_mt_output[-1]
-        
-        rt_mt_rslt = rt_mt_output.split(": ")
-        rt_mt_rslt = rt_mt_rslt[1].split('\n')
-        rt_mt_rslt = rt_mt_rslt[0]
-
-        print(rt_mt_output)
-        
-        rt_vs_padmt = rt_val/padmt_val
-        
-        if(rt_vs_padmt < 0):
-            rt_vs_padmt *= -1
-        
-        rtTable.add_row([f"{k}%", rt_val, rt_vs_padmt, rt_mt_rslt])
-        
-        end_rt = time.time()
-        
-        print("# ======================================================== #")
-        print("Adaptive Random Testing (ART)")
-        print("# ======================================================== #\n")
-        
-        start_art = time.time()
-        
-        random_index = []
-        art_test_cases = perform_adaptive_random_testing(code, dataset, len(dataset)-1, 10, random_index)
-        
-        art_val = int(0)
-        
-        for x in art_test_cases:
-            art_val += int(x['z'])
-        
-        print("Adaptive Random Testing Value:", art_val, "\n")
-        
-        with open('ART_Values.json', 'w') as f:
-            pass
-        
-        # Random Testing: Saving Values to File
-
-        jsonString = json.dumps(art_test_cases)
-        jsonFile = open("ART_Values.json", 'w')
-        jsonFile.write(jsonString)
-        jsonFile.close()
-        
-        
-        print("# ======================================================== #")
-        print("ART Result: Mutation Testing (MT)")
-        print("# ======================================================== #\n")
-        
-        
-        art_mt_output = subprocess.check_output(mutPyObj[2], shell=True, universal_newlines=True)
-        art_mt_output = art_mt_output.split('[*]')
-        art_mt_output = art_mt_output[-1]
-        
-        art_mt_rslt = art_mt_output.split(": ")
-        art_mt_rslt = art_mt_rslt[1].split('\n')
-        art_mt_rslt = art_mt_rslt[0]
-
-        print(art_mt_output)
-        
-        art_vs_padmt = art_val/padmt_val
-        
-        if(art_vs_padmt < 0):
-            art_vs_padmt *= -1
-        
-        artTable.add_row([f"{k}%", art_val, art_vs_padmt, art_mt_rslt])
-        
-        end_art = time.time()
         
         print("# ======================================================== #")
         print("Dynamic Symbolic Execution (DSE)")
@@ -689,14 +427,14 @@ def padmt_algo(code, constraints, mutPyObj, srcCode):
         
         print("Dynamic Symbolic Execution Value:", dse_val, "\n")
 
-        with open('DSE_Values.json', 'w') as f:
+        with open('./temp/DSE_Values.json', 'w') as f:
             pass
 
         
         # Random Testing: Saving Values to File
 
         jsonString = json.dumps(dse_values)
-        jsonFile = open("DSE_Values.json", 'w')
+        jsonFile = open("./temp/DSE_Values.json", 'w')
         jsonFile.write(jsonString)
         jsonFile.close()
         
@@ -742,8 +480,6 @@ def padmt_algo(code, constraints, mutPyObj, srcCode):
                 
             
             total_time_padmt = (end_padmt - start_padmt)
-            total_time_rt = (end_rt - start_rt)
-            total_time_art = (end_art - start_art)
             total_time_dse = (end_dse - start_dse)
 
             po_val = (total_time_padmt - total_time_dse) / total_time_padmt
@@ -752,23 +488,19 @@ def padmt_algo(code, constraints, mutPyObj, srcCode):
 #                 po_val *= -1
 
             total_time_padmt *= 1000
-            total_time_rt *= 1000
-            total_time_art *= 1000
             total_time_dse *= 1000
 
-            poTable.add_row([f"{k}%", "%.2f" % total_time_padmt, "%.2f" % total_time_rt, "%.2f" % total_time_art, "%.2f" % total_time_dse, "%.2f" % po_val])
+            poTable.add_row([f"{k}%", "%.2f" % total_time_padmt, "%.2f" % total_time_dse, "%.2f" % po_val])
         
     print(f"{padmtTable}\n\n")
-    print(f"{rtTable}\n\n")
-    print(f"{artTable}\n\n")
     print(f"{dseTable}\n\n")
     print(f"{priTable}\n\n")
     print(f"{poTable}\n\n")
     
-    tables = {'padmt': padmtTable, 'rt': rtTable, 'art': artTable, 'dse': dseTable}
+    tables = {'padmt': padmtTable, 'dse': dseTable}
     
     kTestCases = ['10%', '20%', '30%', '40%', '50%', '60%', '70%', '80%', '90%', '100%']
-    colNames = ['K Test Cases', 'PaDMT', 'RT', 'ART', 'DSE']
+    colNames = ['K Test Cases', 'PaDMT', 'DSE']
     tableData = []
     faultRate = []
 
@@ -785,14 +517,14 @@ def padmt_algo(code, constraints, mutPyObj, srcCode):
     dfData = []
 
     for index, value in enumerate(kTestCases):
-        dfData.append([value, tableData[0][index], tableData[1][index], tableData[2][index], tableData[3][index]])
+        dfData.append([value, tableData[0][index], tableData[3][index]])
     
     df = pd.DataFrame(dfData, columns=colNames)
     
     padmtFig = px.line(
         df, 
         x='K Test Cases', 
-        y=[df['PaDMT'], df['RT'], df['ART'], df['DSE']], 
+        y=[df['PaDMT'], df['DSE']], 
         text='value',
         labels={
             "value": "Fault Detection Rate",
@@ -808,10 +540,7 @@ def padmt_algo(code, constraints, mutPyObj, srcCode):
         autotypenumbers='convert types'
     )
     padmtFig.show()
-        
-        
-    os.remove("ART_Values.json")
-    os.remove("DSE_Values.json")
-    os.remove("MR_Values.json")
-    os.remove("RT_Values.json")
+    
+    os.remove("./temp/DSE_Values.json")
+    os.remove("./temp/MR_Values.json")
         

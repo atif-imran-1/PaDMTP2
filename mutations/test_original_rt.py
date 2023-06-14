@@ -2,7 +2,7 @@ from unittest import TestCase
 from testcodes.originalCode import code as originalCode
 import json
 
-openJSON = open("RT_Values.json")
+openJSON = open("./temp/RT_Values.json")
 
 dataSaveJSON = json.load(openJSON)
 

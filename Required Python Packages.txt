@@ -7,3 +7,9 @@ pip install plotly
 pip install prettytable
 
 pip install MutPy
+
+pip install pytest
+
+pip install angr
+
+pip install claripy

@@ -36,7 +36,6 @@ def path_trace(code, data):
         if not '---' in val and len(val) > 0:
             arr.append(f"{val}\n")
 
-    result = {"x": val_x, "y": val_y, "path": arr, "z": val_z, "length": len(arr), "pad-mt": len(arr)}
-    # result = {"x": val_x, "y": val_y, "path": arr, "z": val_z, "length": len(arr), "pad-mt": abs(val_z * len(arr))}
+    result = {"x": val_x, "y": val_y, "path": arr, "z": val_z, "length": len(arr)}
 
     return result

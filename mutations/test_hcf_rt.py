@@ -2,7 +2,7 @@ from unittest import TestCase
 from testcodes.hcf import compute_hcf as hcf
 import json
 
-openJSON = open("RT_Values.json")
+openJSON = open("./temp/RT_Values.json")
 
 dataSaveJSON = json.load(openJSON)
 

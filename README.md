@@ -6,16 +6,20 @@ https://www.sciencedirect.com/science/article/abs/pii/S0164121221001886
 
 ### Required Python Packages
 
-=>  Python-Constraint (https://pypi.org/project/python-constraint/)
+=>  Python-Constraint   (https://pypi.org/project/python-constraint/)
 
-=>  Pandas            (https://pypi.org/project/pandas/)
+=>  Pandas              (https://pypi.org/project/pandas/)
 
-=>  Plotly            (https://pypi.org/project/plotly/)
+=>  Plotly              (https://pypi.org/project/plotly/)
 
-=>  Pretty Table      (https://pypi.org/project/prettytable/)
+=>  Pretty Table        (https://pypi.org/project/prettytable/)
 
-=>  MutPy             (https://pypi.org/project/MutPy/)
+=>  MutPy               (https://pypi.org/project/MutPy/)
 
+=>  PyTest              (https://pypi.org/project/pytest/)
+
+(https://pypi.org/project/claripy/)
+(https://pypi.org/project/angr/)
 
 ### Test Codes
 
@@ -25,4 +29,4 @@ https://www.sciencedirect.com/science/article/abs/pii/S0164121221001886
 
 =>  LCM Calculator
 
-=>  Area of Triangle Calculator
+=>  Positive Difference
