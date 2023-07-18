@@ -18,8 +18,11 @@ https://www.sciencedirect.com/science/article/abs/pii/S0164121221001886
 
 =>  PyTest              (https://pypi.org/project/pytest/)
 
-(https://pypi.org/project/claripy/)
-(https://pypi.org/project/angr/)
+=>  NumPy               (https://pypi.org/project/numpy/)
+
+=>  Scipy               (https://pypi.org/project/scipy/)
+
+=>  Tabulate            (https://pypi.org/project/tabulate/)
 
 ### Test Codes
 

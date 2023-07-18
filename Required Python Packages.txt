@@ -10,6 +10,8 @@ pip install MutPy
 
 pip install pytest
 
-pip install angr
+pip install numpy
 
-pip install claripy
+pip install scipy
+
+pip install tabulate
