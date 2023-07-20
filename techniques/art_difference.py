@@ -10,7 +10,7 @@ def apply_art(test_function, art_test_cases):
         input_data = (x, y)
         
         # Generate expected output
-        expected_output = abs(x - y)
+        expected_output = x - y if x >= y else y + x
 
         output = test_function(*input_data)
 

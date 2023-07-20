@@ -41,7 +41,8 @@ def padmtp_algo(code, constraints, mutPyObj):
         dataset_size = round((k/100) * sol_length)
         dataset = []
         
-        start_padmtp = time.time()
+        if k == 100:
+            start_padmtp = time.time()
         
         for index in range(dataset_size):
             dataset.append(constraints[index])
@@ -355,7 +356,6 @@ def padmtp_algo(code, constraints, mutPyObj):
         padmtp_table.loc[index] = tbl_row_data
         index += 1
         
-        end_padmtp = time.time()
 
         if k == 100:
             sortedData = []
@@ -372,6 +372,8 @@ def padmtp_algo(code, constraints, mutPyObj):
             for index, value in prioritizedTestCases.iterrows():
                 priTable.add_row([value['x'], value['y'], value['length']])
 
+            end_padmtp = time.time()
+            
             total_time_padmtp = (end_padmtp - start_padmtp)
 
     print(f"{padmtpTable}\n\n")
@@ -379,6 +381,6 @@ def padmtp_algo(code, constraints, mutPyObj):
     padmtp_table = padmtp_table.reset_index(drop=True)
     os.remove("./temp/MR_Values.json")
 
-    rsltObj = {'PaDMTP_DataFrame': padmtp_table, 'PaDMTP_Overhead': total_time_padmtp}
+    rsltObj = {'PaDMTP_DataFrame': padmtp_table, 'PaDMTP_Overhead_STCP': total_time_padmtp, 'PaDMTP_Overhead_STCG': 0}
     
     return rsltObj

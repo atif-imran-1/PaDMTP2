@@ -106,6 +106,6 @@ def random_testing(pytest_cmd, mutpy_cmd, random_test_cases):
     os.remove("./temp/RT_Test_Cases.json")
     os.remove("./temp/RT_Values.json")
     
-    rsltObj = {'RT_DataFrame': df, 'RT_Overhead': total_time_rt}
+    rsltObj = {'RT_DataFrame': df, 'RT_Overhead_STCP': total_time_rt, 'RT_Overhead_STCG': 0}
     
     return rsltObj

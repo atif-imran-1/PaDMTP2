@@ -1,13 +1,9 @@
+def compute_gcd(a, b):
+    while b != 0:
+        a, b = b, a % b
+    return a
+
 def compute_lcm(x, y):
-    if x > y:
-        greater = x
-    else:
-        greater = y
-
-    while(True):
-        if((greater % x == 0) and (greater % y == 0)):
-            lcm = greater
-            break
-        greater += 1
-
+    gcd = compute_gcd(x, y)
+    lcm = abs(x * y) // gcd
     return lcm

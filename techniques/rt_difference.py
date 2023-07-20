@@ -11,7 +11,7 @@ RT_Test_Cases_Obj = []
 @pytest.mark.parametrize("x, y", RT_Test_Cases)
 def test_positive_difference_random_input(x, y):
     # Generate expected output
-    expected_output = abs(x - y)
+    expected_output = x - y if x >= y else y - x
         
     # Compare expected output with actual output
     result = difference(x, y)

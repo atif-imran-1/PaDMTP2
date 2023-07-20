@@ -61,7 +61,7 @@ def adaptive_random_testing(code, mutpy_cmd, art_test_cases, program):
             art_rslts = DIFF_ART(code, dataset)
 
         print("# ================================= #")
-        print("RT Results")
+        print("ART Results")
         print("# ================================= #\n")
         
         art_total_tests = art_rslts[1] + art_rslts[2]
@@ -75,7 +75,7 @@ def adaptive_random_testing(code, mutpy_cmd, art_test_cases, program):
         jsonFile.close()
 
         print("# ================================= #")
-        print("RT Result: Mutation Testing (MT)")
+        print("ART Result: Mutation Testing (MT)")
         print("# ================================= #\n")
         
         art_mt_output = subprocess.check_output(mutpy_cmd, shell=True, universal_newlines=True)
@@ -103,6 +103,6 @@ def adaptive_random_testing(code, mutpy_cmd, art_test_cases, program):
     df = df.reset_index(drop=True)
     os.remove("./temp/ART_Values.json")
     
-    rsltObj = {'ART_DataFrame': df, 'ART_Overhead': total_time_art}
+    rsltObj = {'ART_DataFrame': df, 'ART_Overhead_STCP': total_time_art, 'ART_Overhead_STCG': 0}
     
     return rsltObj
